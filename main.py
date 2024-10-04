@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from handlers import users_handler
-from schemas.user import UserCreate,UserUpdate
+from schemas.user import UserCreate,UserUpdate,UserAuthorize
 from database import metadata, engine, database
 from models import users
 from models.Users import UserRole
@@ -32,3 +32,7 @@ async def delete_user(email: str):
 @app.put("/users/")
 async def update_user(user: UserUpdate):
     return await users_handler.update_user(user, database)
+
+@app.put("/users/authorize/")
+async def authorize_user(user: UserAuthorize):
+    return await users_handler.authorize_user(user, database)

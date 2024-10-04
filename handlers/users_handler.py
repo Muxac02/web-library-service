@@ -3,8 +3,9 @@ from sqlalchemy import select, insert
 from utils.password import hash_password, verify_password
 from models import users
 from databases import Database
-from schemas.user import UserCreate, UserUpdate
+from schemas.user import UserCreate, UserUpdate, UserAuthorize
 from models.Users import UserRole
+from utils.token import create_access_token
 
 async def create_user(user: UserCreate, db: Database, role: UserRole = "user"):
     query = users.select().where(users.c.email == user.email)
@@ -49,5 +50,17 @@ async def update_user(user: UserUpdate, db: Database):
             await db.execute(query)
             return {"old info":{"name": result.name, "email": result.email},
                     "new info":{"name": user.newName, "email": user.newEmail, "role": user.newRole}}
-        raise HTTPException(status_code=401, detail="Wrong password")
+        raise HTTPException(status_code=401, detail="User or password not correct")
     raise HTTPException(status_code=400, detail="No user found")
+
+async def authorize_user(user: UserAuthorize, db: Database):
+    query = users.select().where(users.c.email == user.email)
+    existing_user = await db.fetch_one(query)
+    if not existing_user:
+        raise HTTPException(status_code=400, detail="User not found")
+    
+    if (verify_password(user.password,existing_user.hashed_password)):
+        token = create_access_token(data={"sub": existing_user.name,"role":existing_user.role.value})
+        return {"token":token}
+        
+    raise HTTPException(status_code=401, detail="User or password not correct")
