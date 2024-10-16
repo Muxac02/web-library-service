@@ -7,7 +7,7 @@ from schemas.user import UserCreate, UserUpdate, UserAuthorize
 from models.Users import UserRole
 from utils.token import create_access_token
 
-async def create_user(user: UserCreate, db: Database, role: UserRole = "user"):
+async def create_user(user: UserCreate, db: Database, role: UserRole):
     query = users.select().where(users.c.email == user.email)
     existing_user = await db.fetch_one(query)
     if existing_user:

@@ -23,7 +23,7 @@ async def read_users():
 
 @app.post("/users/")
 async def create_user(user: UserCreate, role: UserRole):
-    return await users_handler.create_user(user,database)
+    return await users_handler.create_user(user, database, role)
 
 @app.delete("/users/")
 async def delete_user(email: str):
