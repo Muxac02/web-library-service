@@ -14,11 +14,11 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     else:
         expire = datetime.utcnow() + timedelta(minutes=int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES")))
     to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, os.getenv("SECRET_KEY"), algorithm=os.getenv("ALGORITHM"))
+    encoded_jwt = jwt.encode(to_encode, os.getenv("SECRET_KEY"), algorithm=os.getenv("ALGHORITM"))
     return encoded_jwt
 
 oauth2_scheme = HTTPBearer()
 
-def validate_token_and_role(required_roles: List[str]):
-    def token_validator(token: HTTPAuthorizationCredentials = Depends(oauth2_scheme)):
-        token = token.credentials
+#def validate_token_and_role(required_roles: List[str]):
+#    def token_validator(token: HTTPAuthorizationCredentials = Depends(oauth2_scheme)):
+#        token = token.credentials
