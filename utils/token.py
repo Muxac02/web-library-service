@@ -4,6 +4,7 @@ from datetime import datetime,timedelta
 import jwt
 import os
 from dotenv import load_dotenv
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     load_dotenv()
@@ -15,3 +16,9 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, os.getenv("SECRET_KEY"), algorithm=os.getenv("ALGORITHM"))
     return encoded_jwt
+
+oauth2_scheme = HTTPBearer()
+
+def validate_token_and_role(required_roles: List[str]):
+    def token_validator(token: HTTPAuthorizationCredentials = Depends(oauth2_scheme)):
+        token = token.credentials
