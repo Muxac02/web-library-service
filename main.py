@@ -1,9 +1,10 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from handlers import users_handler
 from schemas.user import UserCreate,UserUpdate,UserAuthorize
 from database import metadata, engine, database
 from models import users
 from models.Users import UserRole
+from utils.token import validate_token_and_role
 
 metadata.create_all(engine)
 
@@ -36,3 +37,12 @@ async def update_user(user: UserUpdate):
 @app.put("/users/authorize/")
 async def authorize_user(user: UserAuthorize):
     return await users_handler.authorize_user(user, database)
+
+@app.get("/with-credentials")
+async def check_credentials(user = Depends(validate_token_and_role([ "user", "admin"]))):
+    return {"msg": "Welcome allowed user"}
+
+
+@app.get("/without-credentials")
+async def check_credentials():
+     return {"msg": "Welcome all"}
