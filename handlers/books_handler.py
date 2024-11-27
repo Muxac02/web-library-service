@@ -58,8 +58,7 @@ async def get_book(book_id: int,
     }
     
 async def download_book(book_id: int,
-                        db: Database,
-                        #user = Depends(validate_token_and_role(["user", "admin", "aproved_user"])) 
+                        db: Database
                         ):
     query = books.select().where(books.c.id == book_id)
     book = await db.fetch_one(query=query)
@@ -75,8 +74,7 @@ async def download_book(book_id: int,
     return FileResponse(path=file_path, filename=os.path.basename(file_path))
 
 async def delete_book(book_id: int,
-                      db: Database,
-                      #user = Depends(validate_token_and_role(["admin"]))
+                      db: Database
                       ):
     query = books.select().where(books.c.id == book_id)
     book = await db.fetch_one(query=query)
@@ -101,8 +99,7 @@ async def update_book(book_id: int,
                       db: Database,
                       title = Form(...),
                       author = Form(...),
-                      description = Form(...),
-                      #user = Depends(validate_token_and_role(["admin"]))
+                      description = Form(...)
                       ):
     query = books.select().where(books.c.id == book_id)
     existing_book = await db.fetch_one(query=query)

@@ -10,5 +10,5 @@ reviews = Table(
     Column("book_id", Integer, ForeignKey("books.id")),
     Column("rating", Integer),
     Column("review_text", String),
-    Column("created_at", DateTime, default=datetime.utcnow)
+    Column("created_at", DateTime, default=datetime.utcnow())
 )
